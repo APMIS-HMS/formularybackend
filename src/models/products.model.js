@@ -1,13 +1,11 @@
-// products-model.js - A mongoose model
-//
-// See http://mongoosejs.com/docs/models.html
-// for more of what you can do here.
+const metadataSchema = require('../viewmodels/metadata');
+
 module.exports = function(app) {
     const mongooseClient = app.get('mongooseClient');
     const { Schema } = mongooseClient;
     const products = new Schema({
         name: { type: String, required: true },
-        metadata: { type: Schema.Types.Mixed, required: false },
+        metadata: { metadataSchema, required: false },
         productType: { type: String, required: true },
         isActive: { type: Boolean, default: true },
     }, {
