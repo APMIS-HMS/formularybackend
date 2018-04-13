@@ -1,6 +1,17 @@
 const products = require('./products/products.service.js');
 const productTypes = require('./product-types/product-types.service.js');
-module.exports = function (app) {
-  app.configure(products);
-  app.configure(productTypes);
+const searchBrands = require('./search-brands/search-brands.service.js');
+const users = require('./users/users.service.js');
+
+const rxnconso = require('./rxnconso/rxnconso.service.js');
+
+const prescriptions = require('./prescriptions/prescriptions.service.js');
+
+module.exports = function(app) {
+    app.configure(products);
+    app.configure(productTypes);
+    app.configure(searchBrands);
+    app.configure(users);
+    app.configure(rxnconso);
+    app.configure(prescriptions);
 };
