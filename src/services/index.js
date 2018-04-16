@@ -7,6 +7,8 @@ const rxnconso = require('./rxnconso/rxnconso.service.js');
 
 const prescriptions = require('./prescriptions/prescriptions.service.js');
 
+const rxnrel = require('./rxnrel/rxnrel.service.js');
+
 module.exports = function(app) {
     app.configure(products);
     app.configure(productTypes);
@@ -14,4 +16,5 @@ module.exports = function(app) {
     app.configure(users);
     app.configure(rxnconso);
     app.configure(prescriptions);
+    app.configure(rxnrel);
 };
