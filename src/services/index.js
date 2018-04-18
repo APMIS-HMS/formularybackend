@@ -9,6 +9,8 @@ const prescriptions = require('./prescriptions/prescriptions.service.js');
 
 const rxnrel = require('./rxnrel/rxnrel.service.js');
 
+const searchIngredients = require('./search-ingredients/search-ingredients.service.js');
+
 module.exports = function(app) {
     app.configure(products);
     app.configure(productTypes);
@@ -17,4 +19,5 @@ module.exports = function(app) {
     app.configure(rxnconso);
     app.configure(prescriptions);
     app.configure(rxnrel);
+    app.configure(searchIngredients);
 };
