@@ -8,7 +8,8 @@ class Service {
     async find(params) {
         const consoService = this.app.service('rxnconso');
         let brands = await consoService.find({ query: { 'TTY': 'SCD', 'SAB': 'RXNORM', STR: { '$regex': params.query.search, '$options': 'i' }, $limit: (params.query.$limit) ? params.query.$limit : 10 } });
-        return jsend.success(brands);
+        const sub = brands.data.map(this.reFactorPrescriptionData);
+        return jsend.success(sub);
     }
 
     async get(id, params) {
