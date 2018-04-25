@@ -18,6 +18,8 @@ class Service {
                     'TTY': 'SCD'
                 }
             });
+            console.log(params.query.search);
+            console.log(awaitConsoService);
             const data = awaitConsoService.data.map(this.reFactorPrescriptionData);
             awaitConsoService.data = data;
             return jsend.success(awaitConsoService);
