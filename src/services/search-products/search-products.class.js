@@ -15,11 +15,11 @@ class Service {
     reFactorPrescriptionData(data) {
         return { id: data._id, name: data.STR, code: data.RXCUI };
     }
-    get(id, params) {
-        return Promise.resolve({
-            id,
-            text: `A new message with ID: ${id}!`
-        });
+    async get(id, params) {
+        const consoService = this.app.service('products');
+        let brands = await consoService.get(id);
+        const sub = this.reFactorPrescriptionData(brands);
+        return jsend.success(sub);
     }
 
     create(data, params) {
