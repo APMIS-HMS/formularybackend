@@ -11,7 +11,6 @@ class Service {
         const sub = brands.data.map(this.reFactorPrescriptionData);
         return jsend.success(sub);
     }
-
     reFactorPrescriptionData(data) {
         return { id: data._id, name: data.STR, code: data.RXCUI };
     }
