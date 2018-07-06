@@ -4,7 +4,6 @@ class Service {
     constructor(options) {
         this.options = options || {};
     }
-
     async find(params) {
         if (params.query.search == undefined || params.query.search.length >= 4) {
             const consoService = this.app.service('rxnconso');

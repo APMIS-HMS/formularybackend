@@ -11,6 +11,8 @@ const rxnrel = require('./rxnrel/rxnrel.service.js');
 
 const searchIngredients = require('./search-ingredients/search-ingredients.service.js');
 
+const searchProducts = require('./search-products/search-products.service.js');
+
 module.exports = function(app) {
     app.configure(products);
     app.configure(productTypes);
@@ -20,4 +22,5 @@ module.exports = function(app) {
     app.configure(prescriptions);
     app.configure(rxnrel);
     app.configure(searchIngredients);
+    app.configure(searchProducts);
 };
