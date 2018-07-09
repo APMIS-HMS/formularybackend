@@ -13,6 +13,10 @@ const searchIngredients = require('./search-ingredients/search-ingredients.servi
 
 const searchProducts = require('./search-products/search-products.service.js');
 
+const createBrandedProducts = require('./create-branded-products/create-branded-products.service.js');
+
+const rxcuiIds = require('./rxcui-ids/rxcui-ids.service.js');
+
 module.exports = function(app) {
     app.configure(products);
     app.configure(productTypes);
@@ -23,4 +27,6 @@ module.exports = function(app) {
     app.configure(rxnrel);
     app.configure(searchIngredients);
     app.configure(searchProducts);
+    app.configure(createBrandedProducts);
+    app.configure(rxcuiIds);
 };
