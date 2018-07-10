@@ -1,6 +1,6 @@
 // Initializes the `products` service on path `/products`
 const createService = require('feathers-mongoose');
-const createModel = require('../../models/products.model');
+const createModel = require('../../models/rxnconso.model');
 const hooks = require('./products.hooks');
 
 module.exports = function(app) {
