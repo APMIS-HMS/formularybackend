@@ -38,7 +38,9 @@ class Service {
       "SCUI": "",
       "TTY": "",
       "CODE": "",
-      "STR": ""
+      "STR": "",
+      "REGIMENS":"",
+      "MAT":""
     };
     const checkBN = await rxnconsoService.find({
       query: {
@@ -72,7 +74,8 @@ class Service {
     consosObject.CODE = consosObject.RXCUI;
     consosObject.TTY = 'SBD';
     consosObject.STR = data.SCD.STR + '[' + data.BN + ']';
-    consosBnObject.MAT = data.MAT;
+    consosObject.MAT = data.MAT;
+    consosObject.REGIMENS = data.REGIMENS;
     const savedRxnconsos = await rxnconsoService.create(consosObject);
     //End Save SBD
 

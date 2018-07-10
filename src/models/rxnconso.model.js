@@ -25,7 +25,8 @@ module.exports = function(app) {
         SUPPRESS: { type: String, required: false, 'default': '' },
         CVF: { type: String, required: false, 'default': '' },
         MAT: { type: String, required: false}, //Product Manufacturer
-        URL: { type: String, required: false} //Product Brand Image URL
+        URL: { type: String, required: false}, //Product Brand Image URL
+        REGIMENS:[{ type: Schema.Types.Mixed, required: false}] //Product Regimen
     });
 
     return mongooseClient.model('rxnconso', rxnconso);
