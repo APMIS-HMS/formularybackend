@@ -7,23 +7,26 @@ module.exports = function(app) {
     const { Schema } = mongooseClient;
     const rxnconso = new Schema({
         RXCUI: { type: String, required: false },
-        LAT: { type: String, required: false },
-        TS: { type: String, required: false },
-        LUI: { type: String, required: false },
-        STT: { type: String, required: false },
-        SUI: { type: String, required: false },
-        ISPREF: { type: String, required: false },
-        RXAUI: { type: String, required: false },
-        SAUI: { type: String, required: false },
-        SCUI: { type: String, required: false },
-        SDUI: { type: String, required: false },
-        SAB: { type: String, required: false },
-        TTY: { type: String, required: false },
-        CODE: { type: String, required: false },
-        STR: { type: String, required: false },
-        SRL: { type: String, required: false },
-        SUPPRESS: { type: String, required: false },
-        CVF: { type: String, required: false }
+        LAT: { type: String, required: false, 'default': 'ENG'  },
+        TS: { type: String, required: false, 'default': '' },
+        LUI: { type: String, required: false, 'default': '' },
+        STT: { type: String, required: false, 'default': '' },
+        SUI: { type: String, required: false, 'default': '' },
+        ISPREF: { type: String, required: false, 'default': '' },
+        RXAUI: { type: String, required: false, 'default': '' },
+        SAUI: { type: String, required: false, 'default': '' },
+        SCUI: { type: String, required: false, 'default': '' },
+        SDUI: { type: String, required: false, 'default': '' },
+        SAB: { type: String, required: false, 'default': 'NIG' },
+        TTY: { type: String, required: false, 'default': '' },
+        CODE: { type: String, required: false, 'default': '' },
+        STR: { type: String, required: false, 'default': '' },
+        SRL: { type: String, required: false, 'default': '' },
+        SUPPRESS: { type: String, required: false, 'default': '' },
+        CVF: { type: String, required: false, 'default': '' },
+        MAT: { type: String, required: false}, //Product Manufacturer
+        URL: { type: String, required: false}, //Product Brand Image URL
+        REGIMENS:[{ type: Schema.Types.Mixed, required: false}] //Product Regimen
     });
 
     return mongooseClient.model('rxnconso', rxnconso);
