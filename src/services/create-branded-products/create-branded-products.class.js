@@ -29,15 +29,6 @@ class Service {
     const productService = this.app.service('products');
     const matService = this.app.service('manufacturers');
     const imgProductUploadService = this.app.service('product-imgs');
-    let STR = '';
-    for (let index = 0; index < data.SCD.length; index++) {
-      const element = data.SCD[index];
-      if (index === 0) {
-        STR = element.STR;
-      } else {
-        STR = STR + ' / ' + element.STR;
-      }
-    }
     //Start Save SBD
     let consosObject = {
       "RXCUI": "",
@@ -47,7 +38,9 @@ class Service {
       "SCUI": "",
       "TTY": "",
       "CODE": "",
-      "STR": ""
+      "STR": "",
+      "REGIMENS":"",
+      "MAT":""
     };
     const checkBN = await rxnconsoService.find({
       query: {
@@ -80,8 +73,9 @@ class Service {
     consosObject.SAUI = consosObject.RXAUI;
     consosObject.CODE = consosObject.RXCUI;
     consosObject.TTY = 'SBD';
-    consosObject.STR = STR + '[' + data.BN + ']';
-    consosBnObject.MAT = data.MAT;
+    consosObject.STR = data.SCD.STR + '[' + data.BN + ']';
+    consosObject.MAT = data.MAT;
+    consosObject.REGIMENS = data.REGIMENS;
     const savedRxnconsos = await rxnconsoService.create(consosObject);
     //End Save SBD
 
@@ -117,193 +111,183 @@ class Service {
     //End Save BN
     let rxnrel_data = [];
     let rxnrel_data_item = {};
-    for (let index = 0; index < data.SCD.length; index++) {
-      const element = data.SCD[index];
-      //Create SCD and SBD
-      let rexRelsObject = {
-        "RXCUI1": "",
-        "RXAUI1": "",
-        "STYPE1": "",
-        "REL": "",
-        "RXCUI2": "",
-        "RXAUI2": "",
-        "STYPE2": "",
-        "RELA": "",
-        "RUI": "",
-        "SRUI": "",
-        "SAB": "",
-        "SL": "",
-        "DIR": "",
-        "RG": "",
-        "SUPPRESS": "",
-        "CVF": ""
-      };
-      rexRelsObject.RXCUI1 = element.RXCUI;
-      rexRelsObject.RXCUI2 = savedRxnconsos.RXCUI;
-      rexRelsObject.RELA = 'quantified_form_of';
-      rexRelsObject.SAB = 'NIG';
-      rexRelsObject.STYPE1 = 'CUI';
-      rexRelsObject.STYPE2 = 'CUI';
-      rexRelsObject.REL = 'NIG';
-      rexRelsObject.RUI = generateAUI();
-      const saved_SCD_SBD_Rxnrel = await rxnrelService.create(rexRelsObject);
-      rxnrel_data_item.SCD_SBD_Rxnrel = saved_SCD_SBD_Rxnrel;
-      //Create SBD and SCD
-      let rexRelsObject_2 = {
-        "RXCUI1": "",
-        "RXAUI1": "",
-        "STYPE1": "",
-        "REL": "",
-        "RXCUI2": "",
-        "RXAUI2": "",
-        "STYPE2": "",
-        "RELA": "",
-        "RUI": "",
-        "SRUI": "",
-        "SAB": "",
-        "SL": "",
-        "DIR": "",
-        "RG": "",
-        "SUPPRESS": "",
-        "CVF": ""
-      };
-      rexRelsObject_2.RXCUI1 = savedRxnconsos.RXCUI;
-      rexRelsObject_2.RXCUI2 = element.RXCUI;
-      rexRelsObject_2.RELA = 'has_quantified_form';
-      rexRelsObject_2.SAB = 'NIG';
-      rexRelsObject_2.STYPE1 = 'CUI';
-      rexRelsObject_2.STYPE2 = 'CUI';
-      rexRelsObject_2.REL = 'NIG';
-      rexRelsObject_2.RUI = generateAUI();
-      const saved_SBD_SCD_Rxnrel = await rxnrelService.create(rexRelsObject_2);
-      rxnrel_data_item.SBD_SCD_Rxnrel = saved_SBD_SCD_Rxnrel;
-
-
-      //Create BN and SBD
-      let rexRelsObject_3 = {
-        "RXCUI1": "",
-        "RXAUI1": "",
-        "STYPE1": "",
-        "REL": "",
-        "RXCUI2": "",
-        "RXAUI2": "",
-        "STYPE2": "",
-        "RELA": "",
-        "RUI": "",
-        "SRUI": "",
-        "SAB": "",
-        "SL": "",
-        "DIR": "",
-        "RG": "",
-        "SUPPRESS": "",
-        "CVF": ""
-      };
-      rexRelsObject_3.RXCUI1 = savedBnRxnconsos.RXCUI;
-      rexRelsObject_3.RXCUI2 = savedRxnconsos.RXCUI;
-      rexRelsObject_3.RELA = 'tradename_of';
-      rexRelsObject_3.SAB = 'NIG';
-      rexRelsObject_3.STYPE1 = 'CUI';
-      rexRelsObject_3.STYPE2 = 'CUI';
-      rexRelsObject_3.REL = 'NIG';
-      rexRelsObject_3.RUI = generateAUI();
-      const saved_BN_SBD_Rxnrel = await rxnrelService.create(rexRelsObject_3);
-      rxnrel_data_item.BN_SBD_Rxnrel = saved_BN_SBD_Rxnrel;
-
-
-
-      //Create SBD and BN
-      let rexRelsObject_4 = {
-        "RXCUI1": "",
-        "RXAUI1": "",
-        "STYPE1": "",
-        "REL": "",
-        "RXCUI2": "",
-        "RXAUI2": "",
-        "STYPE2": "",
-        "RELA": "",
-        "RUI": "",
-        "SRUI": "",
-        "SAB": "",
-        "SL": "",
-        "DIR": "",
-        "RG": "",
-        "SUPPRESS": "",
-        "CVF": ""
-      };
-      rexRelsObject_4.RXCUI1 = savedRxnconsos.RXCUI;
-      rexRelsObject_4.RXCUI2 = savedBnRxnconsos.RXCUI;
-      rexRelsObject_4.RELA = 'has_tradename';
-      rexRelsObject_4.SAB = 'NIG';
-      rexRelsObject_4.STYPE1 = 'CUI';
-      rexRelsObject_4.STYPE2 = 'CUI';
-      rexRelsObject_4.REL = 'NIG';
-      rexRelsObject_4.RUI = generateAUI();
-      const saved_SBD_BN_Rxnrel = await rxnrelService.create(rexRelsObject_4);
-      rxnrel_data_item.SBD_BN_Rxnrel = saved_SBD_BN_Rxnrel;
-
-
-      //Create BN and SCD
-      let rexRelsObject_5 = {
-        "RXCUI1": "",
-        "RXAUI1": "",
-        "STYPE1": "",
-        "REL": "",
-        "RXCUI2": "",
-        "RXAUI2": "",
-        "STYPE2": "",
-        "RELA": "",
-        "RUI": "",
-        "SRUI": "",
-        "SAB": "",
-        "SL": "",
-        "DIR": "",
-        "RG": "",
-        "SUPPRESS": "",
-        "CVF": ""
-      };
-      rexRelsObject_5.RXCUI1 = savedBnRxnconsos.RXCUI;
-      rexRelsObject_5.RXCUI2 = element.RXCUI;
-      rexRelsObject_5.RELA = 'tradename_of';
-      rexRelsObject_5.SAB = 'NIG';
-      rexRelsObject_5.STYPE1 = 'CUI';
-      rexRelsObject_5.STYPE2 = 'CUI';
-      rexRelsObject_5.REL = 'NIG';
-      rexRelsObject_5.RUI = generateAUI();
-      const saved_BN_SCD_Rxnrel = await rxnrelService.create(rexRelsObject_5);
-      rxnrel_data_item.BN_SCD_Rxnrel = saved_BN_SCD_Rxnrel;
-
-
-      //Create SCD and BN
-      let rexRelsObject_6 = {
-        "RXCUI1": "",
-        "RXAUI1": "",
-        "STYPE1": "",
-        "REL": "",
-        "RXCUI2": "",
-        "RXAUI2": "",
-        "STYPE2": "",
-        "RELA": "",
-        "RUI": "",
-        "SRUI": "",
-        "SAB": "",
-        "SL": "",
-        "DIR": "",
-        "RG": "",
-        "SUPPRESS": "",
-        "CVF": ""
-      };
-      rexRelsObject_6.RXCUI1 = savedBnRxnconsos.RXCUI;
-      rexRelsObject_6.RXCUI2 = element.RXCUI;
-      rexRelsObject_6.RELA = 'has_tradename';
-      rexRelsObject_6.SAB = 'NIG';
-      rexRelsObject_6.STYPE1 = 'CUI';
-      rexRelsObject_6.STYPE2 = 'CUI';
-      rexRelsObject_6.REL = 'NIG';
-      rexRelsObject_6.RUI = generateAUI();
-      const saved_SCD_BN_Rxnrel = await rxnrelService.create(rexRelsObject_6);
-      rxnrel_data_item.SCD_BN_Rxnrel = saved_SCD_BN_Rxnrel;
-      rxnrel_data.push(rxnrel_data_item);
-    }
+    
+    //Create SCD and SBD
+    let rexRelsObject = {
+      "RXCUI1": "",
+      "RXAUI1": "",
+      "STYPE1": "",
+      "REL": "",
+      "RXCUI2": "",
+      "RXAUI2": "",
+      "STYPE2": "",
+      "RELA": "",
+      "RUI": "",
+      "SRUI": "",
+      "SAB": "",
+      "SL": "",
+      "DIR": "",
+      "RG": "",
+      "SUPPRESS": "",
+      "CVF": ""
+    };
+    rexRelsObject.RXCUI1 = data.SCD.RXCUI;
+    rexRelsObject.RXCUI2 = savedRxnconsos.RXCUI;
+    rexRelsObject.RELA = 'quantified_form_of';
+    rexRelsObject.SAB = 'NIG';
+    rexRelsObject.STYPE1 = 'CUI';
+    rexRelsObject.STYPE2 = 'CUI';
+    rexRelsObject.REL = 'NIG';
+    rexRelsObject.RUI = generateAUI();
+    const saved_SCD_SBD_Rxnrel = await rxnrelService.create(rexRelsObject);
+    rxnrel_data_item.SCD_SBD_Rxnrel = saved_SCD_SBD_Rxnrel;
+    //Create SBD and SCD
+    let rexRelsObject_2 = {
+      "RXCUI1": "",
+      "RXAUI1": "",
+      "STYPE1": "",
+      "REL": "",
+      "RXCUI2": "",
+      "RXAUI2": "",
+      "STYPE2": "",
+      "RELA": "",
+      "RUI": "",
+      "SRUI": "",
+      "SAB": "",
+      "SL": "",
+      "DIR": "",
+      "RG": "",
+      "SUPPRESS": "",
+      "CVF": ""
+    };
+    rexRelsObject_2.RXCUI1 = savedRxnconsos.RXCUI;
+    rexRelsObject_2.RXCUI2 = data.SCD.RXCUI;
+    rexRelsObject_2.RELA = 'has_quantified_form';
+    rexRelsObject_2.SAB = 'NIG';
+    rexRelsObject_2.STYPE1 = 'CUI';
+    rexRelsObject_2.STYPE2 = 'CUI';
+    rexRelsObject_2.REL = 'NIG';
+    rexRelsObject_2.RUI = generateAUI();
+    const saved_SBD_SCD_Rxnrel = await rxnrelService.create(rexRelsObject_2);
+    rxnrel_data_item.SBD_SCD_Rxnrel = saved_SBD_SCD_Rxnrel;
+    //Create BN and SBD
+    let rexRelsObject_3 = {
+      "RXCUI1": "",
+      "RXAUI1": "",
+      "STYPE1": "",
+      "REL": "",
+      "RXCUI2": "",
+      "RXAUI2": "",
+      "STYPE2": "",
+      "RELA": "",
+      "RUI": "",
+      "SRUI": "",
+      "SAB": "",
+      "SL": "",
+      "DIR": "",
+      "RG": "",
+      "SUPPRESS": "",
+      "CVF": ""
+    };
+    rexRelsObject_3.RXCUI1 = savedBnRxnconsos.RXCUI;
+    rexRelsObject_3.RXCUI2 = savedRxnconsos.RXCUI;
+    rexRelsObject_3.RELA = 'tradename_of';
+    rexRelsObject_3.SAB = 'NIG';
+    rexRelsObject_3.STYPE1 = 'CUI';
+    rexRelsObject_3.STYPE2 = 'CUI';
+    rexRelsObject_3.REL = 'NIG';
+    rexRelsObject_3.RUI = generateAUI();
+    const saved_BN_SBD_Rxnrel = await rxnrelService.create(rexRelsObject_3);
+    rxnrel_data_item.BN_SBD_Rxnrel = saved_BN_SBD_Rxnrel;
+    //Create SBD and BN
+    let rexRelsObject_4 = {
+      "RXCUI1": "",
+      "RXAUI1": "",
+      "STYPE1": "",
+      "REL": "",
+      "RXCUI2": "",
+      "RXAUI2": "",
+      "STYPE2": "",
+      "RELA": "",
+      "RUI": "",
+      "SRUI": "",
+      "SAB": "",
+      "SL": "",
+      "DIR": "",
+      "RG": "",
+      "SUPPRESS": "",
+      "CVF": ""
+    };
+    rexRelsObject_4.RXCUI1 = savedRxnconsos.RXCUI;
+    rexRelsObject_4.RXCUI2 = savedBnRxnconsos.RXCUI;
+    rexRelsObject_4.RELA = 'has_tradename';
+    rexRelsObject_4.SAB = 'NIG';
+    rexRelsObject_4.STYPE1 = 'CUI';
+    rexRelsObject_4.STYPE2 = 'CUI';
+    rexRelsObject_4.REL = 'NIG';
+    rexRelsObject_4.RUI = generateAUI();
+    const saved_SBD_BN_Rxnrel = await rxnrelService.create(rexRelsObject_4);
+    rxnrel_data_item.SBD_BN_Rxnrel = saved_SBD_BN_Rxnrel;
+    //Create BN and SCD
+    let rexRelsObject_5 = {
+      "RXCUI1": "",
+      "RXAUI1": "",
+      "STYPE1": "",
+      "REL": "",
+      "RXCUI2": "",
+      "RXAUI2": "",
+      "STYPE2": "",
+      "RELA": "",
+      "RUI": "",
+      "SRUI": "",
+      "SAB": "",
+      "SL": "",
+      "DIR": "",
+      "RG": "",
+      "SUPPRESS": "",
+      "CVF": ""
+    };
+    rexRelsObject_5.RXCUI1 = savedBnRxnconsos.RXCUI;
+    rexRelsObject_5.RXCUI2 = data.SCD.RXCUI;
+    rexRelsObject_5.RELA = 'tradename_of';
+    rexRelsObject_5.SAB = 'NIG';
+    rexRelsObject_5.STYPE1 = 'CUI';
+    rexRelsObject_5.STYPE2 = 'CUI';
+    rexRelsObject_5.REL = 'NIG';
+    rexRelsObject_5.RUI = generateAUI();
+    const saved_BN_SCD_Rxnrel = await rxnrelService.create(rexRelsObject_5);
+    rxnrel_data_item.BN_SCD_Rxnrel = saved_BN_SCD_Rxnrel;
+    //Create SCD and BN
+    let rexRelsObject_6 = {
+      "RXCUI1": "",
+      "RXAUI1": "",
+      "STYPE1": "",
+      "REL": "",
+      "RXCUI2": "",
+      "RXAUI2": "",
+      "STYPE2": "",
+      "RELA": "",
+      "RUI": "",
+      "SRUI": "",
+      "SAB": "",
+      "SL": "",
+      "DIR": "",
+      "RG": "",
+      "SUPPRESS": "",
+      "CVF": ""
+    };
+    rexRelsObject_6.RXCUI1 = savedBnRxnconsos.RXCUI;
+    rexRelsObject_6.RXCUI2 = data.SCD.RXCUI;
+    rexRelsObject_6.RELA = 'has_tradename';
+    rexRelsObject_6.SAB = 'NIG';
+    rexRelsObject_6.STYPE1 = 'CUI';
+    rexRelsObject_6.STYPE2 = 'CUI';
+    rexRelsObject_6.REL = 'NIG';
+    rexRelsObject_6.RUI = generateAUI();
+    const saved_SCD_BN_Rxnrel = await rxnrelService.create(rexRelsObject_6);
+    rxnrel_data_item.SCD_BN_Rxnrel = saved_SCD_BN_Rxnrel;
+    rxnrel_data.push(rxnrel_data_item);
+    
     let new_NIG_rxn_product = {};
     let product = savedRxnconsos;
     delete product._id;
