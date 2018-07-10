@@ -9,10 +9,8 @@
     },
     "extends": "eslint:recommended",
     "rules": {
-        "indent": [
-            "error",
-            4
-        ],
+        "no-console": 0,
+        "indent": ["error", 4],
         "linebreak-style": [
             "error",
             "unix"
