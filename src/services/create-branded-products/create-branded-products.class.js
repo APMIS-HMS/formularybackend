@@ -26,6 +26,7 @@ class Service {
   async create(data, params) {
     const rxnconsoService = this.app.service('rxnconso');
     const rxnrelService = this.app.service('rxnrel');
+    const productService = this.app.service('products');
     let STR = '';
     for (let index = 0; index < data.SCD.length; index++) {
       const element = data.SCD[index];
@@ -270,6 +271,10 @@ class Service {
       rxnrel_data.push(rxnrel_data_item);
     }
     let new_NIG_rxn_product = {};
+    let product = savedRxnconsos;
+    delete product._id;
+    const savedProduct = await productService.create(product);
+    savedRxnconsos.productId = savedProduct._id;
     new_NIG_rxn_product = {
       'BN': savedBnRxnconsos,
       'SBD': savedRxnconsos,
