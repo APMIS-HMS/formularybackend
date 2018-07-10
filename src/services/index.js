@@ -17,6 +17,10 @@ const createBrandedProducts = require('./create-branded-products/create-branded-
 
 const rxcuiIds = require('./rxcui-ids/rxcui-ids.service.js');
 
+const manufacturers = require('./manufacturers/manufacturers.service.js');
+
+const productImgs = require('./product-imgs/product-imgs.service.js');
+
 module.exports = function(app) {
     app.configure(products);
     app.configure(productTypes);
@@ -29,4 +33,6 @@ module.exports = function(app) {
     app.configure(searchProducts);
     app.configure(createBrandedProducts);
     app.configure(rxcuiIds);
+    app.configure(manufacturers);
+    app.configure(productImgs);
 };

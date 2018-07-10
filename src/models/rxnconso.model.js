@@ -23,7 +23,9 @@ module.exports = function(app) {
         STR: { type: String, required: false, 'default': '' },
         SRL: { type: String, required: false, 'default': '' },
         SUPPRESS: { type: String, required: false, 'default': '' },
-        CVF: { type: String, required: false, 'default': '' }
+        CVF: { type: String, required: false, 'default': '' },
+        MAT: { type: String, required: false}, //Product Manufacturer
+        URL: { type: String, required: false} //Product Brand Image URL
     });
 
     return mongooseClient.model('rxnconso', rxnconso);

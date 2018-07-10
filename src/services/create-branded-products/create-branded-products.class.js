@@ -27,6 +27,8 @@ class Service {
     const rxnconsoService = this.app.service('rxnconso');
     const rxnrelService = this.app.service('rxnrel');
     const productService = this.app.service('products');
+    const matService = this.app.service('manufacturers');
+    const imgProductUploadService = this.app.service('product-imgs');
     let STR = '';
     for (let index = 0; index < data.SCD.length; index++) {
       const element = data.SCD[index];
@@ -47,6 +49,29 @@ class Service {
       "CODE": "",
       "STR": ""
     };
+    const checkBN = await rxnconsoService.find({
+      query: {
+        'TTY': 'BN',
+        'STR': data.BN
+      }
+    }).collation({
+      locale: 'en',
+      strength: 2
+    });
+
+    const checkMAT = await matService.find({
+      query: {
+        'MAT': data.MAT
+      }
+    }).collation({
+      locale: 'en',
+      strength: 2
+    });
+
+    if (checkMAT.data.length === 0) {
+      await matService.create({'name':data.MAT});
+    }
+
     let customRxcuiUniqueNo = generateAUI();
     let customRxauiSauiNo = generateAUI();
     consosObject.RXCUI = 'NIG' + customRxcuiUniqueNo;
@@ -56,6 +81,7 @@ class Service {
     consosObject.CODE = consosObject.RXCUI;
     consosObject.TTY = 'SBD';
     consosObject.STR = STR + '[' + data.BN + ']';
+    consosBnObject.MAT = data.MAT;
     const savedRxnconsos = await rxnconsoService.create(consosObject);
     //End Save SBD
 
@@ -70,16 +96,24 @@ class Service {
       "CODE": "",
       "STR": ""
     };
-    let customBnRxcuiUniqueNo = generateAUI();
-    let customBnRxauiSauiNo = generateAUI();
-    consosBnObject.RXCUI = 'NIG' + customBnRxcuiUniqueNo;
-    consosBnObject.SCUI = consosBnObject.RXCUI;
-    consosBnObject.RXAUI = 'NIG' + customBnRxauiSauiNo;
-    consosBnObject.SAUI = consosObject.RXAUI;
-    consosBnObject.CODE = consosObject.RXCUI;
-    consosBnObject.TTY = 'BN';
-    consosBnObject.STR = data.BN;
-    const savedBnRxnconsos = await rxnconsoService.create(consosBnObject);
+    let savedBnRxnconsos = {};
+    if (checkBN.data.length === 0) {
+      let customBnRxcuiUniqueNo = generateAUI();
+      let customBnRxauiSauiNo = generateAUI();
+      consosBnObject.RXCUI = 'NIG' + customBnRxcuiUniqueNo;
+      consosBnObject.SCUI = consosBnObject.RXCUI;
+      consosBnObject.RXAUI = 'NIG' + customBnRxauiSauiNo;
+      consosBnObject.SAUI = consosObject.RXAUI;
+      consosBnObject.CODE = consosObject.RXCUI;
+      consosBnObject.TTY = 'BN';
+      consosBnObject.STR = data.BN;
+      consosBnObject.MAT = data.MAT;
+      savedBnRxnconsos = await rxnconsoService.create(consosBnObject);
+    } else {
+      savedBnRxnconsos = checkBN.data[0];
+    }
+
+
     //End Save BN
     let rxnrel_data = [];
     let rxnrel_data_item = {};
@@ -273,6 +307,9 @@ class Service {
     let new_NIG_rxn_product = {};
     let product = savedRxnconsos;
     delete product._id;
+    const uploadedProductImg = await imgProductUploadService.create({'uri':data.BNBase64});
+    product.MAT = data.MAT;
+    product.URL = uploadedProductImg.uri;
     const savedProduct = await productService.create(product);
     savedRxnconsos.productId = savedProduct._id;
     new_NIG_rxn_product = {
