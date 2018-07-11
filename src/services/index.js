@@ -21,6 +21,8 @@ const manufacturers = require('./manufacturers/manufacturers.service.js');
 
 const productImgs = require('./product-imgs/product-imgs.service.js');
 
+const frequencies = require('./frequencies/frequencies.service.js');
+
 module.exports = function(app) {
     app.configure(products);
     app.configure(productTypes);
@@ -35,4 +37,5 @@ module.exports = function(app) {
     app.configure(rxcuiIds);
     app.configure(manufacturers);
     app.configure(productImgs);
+    app.configure(frequencies);
 };

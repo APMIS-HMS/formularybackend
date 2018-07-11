@@ -1,7 +1,8 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
 const CacheMap = require('@feathers-plus/cache');
 const { cache } = require('feathers-hooks-common');
-cacheMap = CacheMap({ max: 100 });
+const cacheMap = CacheMap({ max: 100 });
+
 module.exports = {
     before: {
         all: [cache(cacheMap)],
