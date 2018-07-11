@@ -7,7 +7,17 @@ class Service {
 
     async find(params) {
         const consoService = this.app.service('rxnconso');
-        let brands = await consoService.find({ query: { TTY: 'BN', 'SAB': 'RXNORM', STR: { '$regex': params.query.search, '$options': 'i' }, $limit: (params.query.$limit) ? params.query.$limit : 10 } });
+        let brands = await consoService.find({
+            query: {
+                TTY: 'BN',
+                $or: [
+                    { SAB: 'NIG' },
+                    { SAB: 'RXNORM' }
+                ],
+                STR: { '$regex': params.query.search, '$options': 'i' },
+                $limit: (params.query.$limit) ? params.query.$limit : 10
+            }
+        });
         return jsend.success(brands);
     }
 
