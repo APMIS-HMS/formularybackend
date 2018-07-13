@@ -23,6 +23,8 @@ const productImgs = require('./product-imgs/product-imgs.service.js');
 
 const frequencies = require('./frequencies/frequencies.service.js');
 
+const roles = require('./roles/roles.service.js');
+
 module.exports = function(app) {
     app.configure(products);
     app.configure(productTypes);
@@ -38,4 +40,5 @@ module.exports = function(app) {
     app.configure(manufacturers);
     app.configure(productImgs);
     app.configure(frequencies);
+    app.configure(roles);
 };
