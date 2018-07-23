@@ -6,26 +6,19 @@ class Service {
     }
 
     async find(params) {
-        const consoService = this.app.service('rxnconso');
-        let brands = await consoService.find({
-            query: {
-                TTY: 'BN',
-                $or: [
-                    { SAB: 'NIG' },
-                    { SAB: 'RXNORM' }
-                ],
-                STR: { '$regex': params.query.search, '$options': 'i' },
-                $limit: (params.query.$limit) ? params.query.$limit : 10
-            }
-        });
-        return jsend.success(brands);
+        const consoService = this.app.service('products');
+        let brands = await consoService.find({ query: { STR: { '$regex': params.query.search, '$options': 'i' }, $limit: (params.query.$limit) ? params.query.$limit : 10 } });
+        const sub = brands.data.map(this.reFactorPrescriptionData);
+        return jsend.success(sub);
     }
-
-    get(id, params) {
-        return Promise.resolve({
-            id,
-            text: `A new message with ID: ${id}!`
-        });
+    reFactorPrescriptionData(data) {
+        return { id: data._id, name: data.STR, code: data.RXCUI };
+    }
+    async get(id, params) {
+        const consoService = this.app.service('products');
+        let brands = await consoService.get(id);
+        const sub = this.reFactorPrescriptionData(brands);
+        return jsend.success(sub);
     }
 
     create(data, params) {

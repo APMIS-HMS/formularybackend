@@ -15,13 +15,11 @@ const middleware = require('./middleware');
 const services = require('./services');
 const appHooks = require('./app.hooks');
 const channels = require('./channels');
-
 const mongoose = require('./mongoose');
-
 const authentication = require('./authentication');
+require('dotenv').config();
 
 const app = express(feathers());
-
 // Load app configuration
 app.configure(configuration());
 // Enable CORS, security, compression, favicon and body parsing

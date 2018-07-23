@@ -1,11 +1,9 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
-const CacheMap = require('@feathers-plus/cache');
-const { cache } = require('feathers-hooks-common');
-const cacheMap = CacheMap({ max: 100 });
 
 module.exports = {
     before: {
-        all: [cache(cacheMap)],
+        // all: [ authenticate('jwt') ],
+        all: [],
         find: [],
         get: [],
         create: [],
@@ -15,7 +13,7 @@ module.exports = {
     },
 
     after: {
-        all: [cache(cacheMap)],
+        all: [],
         find: [],
         get: [],
         create: [],
