@@ -10,7 +10,6 @@ class Service {
         this.app = app;
     }
 
-
     find(params) {
         return Promise.resolve([]);
     }
