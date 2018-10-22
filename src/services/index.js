@@ -25,6 +25,10 @@ const frequencies = require('./frequencies/frequencies.service.js');
 
 const roles = require('./roles/roles.service.js');
 
+const createProduct = require('./create-product/create-product.service.js');
+
+const doseForms = require('./dose-forms/dose-forms.service.js');
+
 module.exports = function(app) {
     app.configure(products);
     app.configure(productTypes);
@@ -41,4 +45,6 @@ module.exports = function(app) {
     app.configure(productImgs);
     app.configure(frequencies);
     app.configure(roles);
+    app.configure(createProduct);
+    app.configure(doseForms);
 };
