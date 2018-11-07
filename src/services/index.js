@@ -29,22 +29,25 @@ const createProduct = require('./create-product/create-product.service.js');
 
 const doseForms = require('./dose-forms/dose-forms.service.js');
 
-module.exports = function(app) {
-    app.configure(products);
-    app.configure(productTypes);
-    app.configure(searchBrands);
-    app.configure(users);
-    app.configure(rxnconso);
-    app.configure(prescriptions);
-    app.configure(rxnrel);
-    app.configure(searchIngredients);
-    app.configure(searchProducts);
-    app.configure(createBrandedProducts);
-    app.configure(rxcuiIds);
-    app.configure(manufacturers);
-    app.configure(productImgs);
-    app.configure(frequencies);
-    app.configure(roles);
-    app.configure(createProduct);
-    app.configure(doseForms);
+const strengthUnits = require('./strength-units/strength-units.service.js');
+
+module.exports = function (app) {
+  app.configure(products);
+  app.configure(productTypes);
+  app.configure(searchBrands);
+  app.configure(users);
+  app.configure(rxnconso);
+  app.configure(prescriptions);
+  app.configure(rxnrel);
+  app.configure(searchIngredients);
+  app.configure(searchProducts);
+  app.configure(createBrandedProducts);
+  app.configure(rxcuiIds);
+  app.configure(manufacturers);
+  app.configure(productImgs);
+  app.configure(frequencies);
+  app.configure(roles);
+  app.configure(createProduct);
+  app.configure(doseForms);
+  app.configure(strengthUnits);
 };

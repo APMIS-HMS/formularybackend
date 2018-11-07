@@ -13,14 +13,22 @@ class Service {
           $in: conditions
         },
         SAB: 'RXNORM',
-        $select: ['STR'],
+        $select: ['STR', 'RXCUI'],
         $limit: false
       }
     });
+    let data = drugForms.data;
+    drugForms.data = data.map(this.reFactorPrescriptionData);
 
     return drugForms;
   }
-
+  reFactorPrescriptionData(data) {
+    return {
+      id: data._id,
+      name: data.STR,
+      code: data.RXCUI
+    };
+  }
   get(id, params) {
     return Promise.resolve({
       id,

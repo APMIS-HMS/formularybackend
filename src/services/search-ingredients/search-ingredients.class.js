@@ -31,12 +31,9 @@ class Service {
     const conditions = ['RXNORM', 'RXNORM NG'];
 
     let awaitSelectedConsoService;
-    console.log(params.query);
     if (params.query.id !== undefined) {
-      console.log('a');
       awaitSelectedConsoService = await consoService.get(params.query.id, {});
     } else {
-      console.log('b');
       awaitSelectedConsoService = await consoService.find({
         query: {
           'RXCUI': id,
@@ -49,9 +46,6 @@ class Service {
     }
 
 
-    console.log(44);
-
-    // console.log(awaitSelectedConsoService.data.length);
     if ((awaitSelectedConsoService.data !== undefined && awaitSelectedConsoService.data.length > 0) || awaitSelectedConsoService !== undefined) {
       const awaitConstitutes = await relService.find({
         query: {
@@ -68,7 +62,7 @@ class Service {
           },
         }
       });
-      console.log(55);
+
       if (awaitConstitutes.data.length > 0) {
 
         let awaitConstitutesData = awaitConstitutes.data;
@@ -94,7 +88,6 @@ class Service {
           }
         });
 
-        console.log(66);
         let awaitedDoseFormList = await consoService.find({
           query: {
             RXCUI: {
@@ -106,8 +99,6 @@ class Service {
             },
           }
         });
-
-        console.log(77);
 
         const sub = awaitedConstituentList.data.map(this.reFactorPrescriptionData);
         const sub2 = awaitedDoseFormList.data.map(this.reFactorPrescriptionData);

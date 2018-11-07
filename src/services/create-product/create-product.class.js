@@ -46,8 +46,7 @@ class Service {
       newPIN.STR = data.pinName;
       newPIN.SAB = pin.SAB + ' NG';
 
-      // console.log(newPIN);
-      // console.log(newPIN._id);
+
       pin = await consoService.create(newPIN);
       pin = await consoService.get(newPIN._id);
     }
@@ -64,7 +63,7 @@ class Service {
       newSCDC.SAB = newSCDC.SAB + ' NG';
     }
     await consoService.create(newSCDC);
-    // console.log(newSCDC);
+
 
     // creates SCD object
     let newSCD = Object.assign({}, newSCDC);
@@ -74,8 +73,7 @@ class Service {
     newSCD.RXCUI = this.getRxCUI().toString();
     newSCD.SCUI = newSCD.RXCUI;
     newSCD.CODE = newSCD.RXCUI;
-    await consoService.create(newSCD);
-    // console.log(newSCD);
+    await consoService.create(newSCD);;
 
     // creates SBD object
     let newSBD = Object.assign({}, newSCD);
@@ -86,7 +84,6 @@ class Service {
     newSBD.SCUI = newSBD.RXCUI;
     newSBD.CODE = newSBD.RXCUI;
     await consoService.create(newSBD);
-    // console.log(newSBD);
 
     // let brands = await consoService.find({
     //     query: {
