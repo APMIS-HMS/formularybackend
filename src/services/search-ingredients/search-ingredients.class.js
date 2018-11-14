@@ -107,7 +107,15 @@ class Service {
           let refac = this.reFactorPrescriptionData(awaitSelectedConsoService);
           refac.ingredient_strengths = sub;
           refac.dose_form = sub2;
-          return jsend.success(refac);
+          if (params.query.include_details) {
+            return jsend.success({
+              result: refac,
+              mainResult: awaitConstitutes
+            });
+          } else {
+            return jsend.success(refac);
+          }
+
         } else {
           const main = awaitSelectedConsoService.data.map(this.reFactorPrescriptionData);
           awaitSelectedConsoService.data = main;
@@ -115,7 +123,15 @@ class Service {
             main.ingredient_strengths = sub;
             main.dose_form = sub2;
           });
-          return jsend.success(awaitSelectedConsoService.data[0]);
+          if (param.query.include_details) {
+            return jsend.success({
+              result: awaitSelectedConsoService.data[0],
+              mainResult: awaitConstitutes
+            });
+          } else {
+            return jsend.success(awaitSelectedConsoService.data[0]);
+          }
+
         }
 
       } else {

@@ -73,7 +73,7 @@ class Service {
     newSCD.RXCUI = this.getRxCUI().toString();
     newSCD.SCUI = newSCD.RXCUI;
     newSCD.CODE = newSCD.RXCUI;
-    await consoService.create(newSCD);;
+    await consoService.create(newSCD);
 
     // creates SBD object
     let newSBD = Object.assign({}, newSCD);

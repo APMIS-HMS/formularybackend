@@ -120,7 +120,25 @@ module.exports = function (app) {
     REGIMENS: [{
       type: Schema.Types.Mixed,
       required: false
-    }] //Product Regimen
+    }], //Product Regimen
+    numerator_unit: {
+      type: String,
+      required: false
+    },
+    numerator_value: {
+      type: Number,
+      required: false
+    },
+    denominator_unit: {
+      type: String,
+      required: false
+    },
+    denominator_value: {
+      type: Number,
+      required: false
+    }
+  }, {
+    timestamps: true
   });
 
   return mongooseClient.model('rxnconso', rxnconso);
