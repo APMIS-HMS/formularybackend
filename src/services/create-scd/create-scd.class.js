@@ -16,71 +16,27 @@ class Service {
     });
   }
 
-  create(data, params) {
-    if (Array.isArray(data)) {
-      return Promise.all(data.map((current) => this.create(current, params)));
-    }
-
-    return Promise.resolve(data);
-  }
-
-  async update(id, data, params) {
-    // console.log('data --->:', data.ingredients);
+  async create(data, params) {
     const consoService = this.app.service('rxnconso');
     const relService = this.app.service('rxnrel');
-    // const conditions = ['PIN', 'MIN'];
 
-
-    // if (data.pinName !== undefined) {
-    //   // create a new PIN object
-    //   //check if pinName is existing //TODO
-    //   let newPIN = Object.assign({}, pin);
-    //   newPIN._id = mongoose.Types.ObjectId();
-    //   newPIN.STR = data.pinName;
-    //   newPIN.SAB = pin.SAB + ' NG';
-
-    //   pin = await consoService.create(newPIN);
-    //   pin = await consoService.get(newPIN._id);
-    // }
-
-
-    // console.log('doseForm: --->', data.ingredients.doseForm);
 
     let newSCD;
     let newSCDC;
-    // const start = async () => {
-    await this.asyncForEach(data.ingredients.ingredients, async (ingredient) => {
-      let originalSCD = await consoService.get(id);
-      const scdcRelData = await relService.find({
-        query: {
-          'RXCUI1': originalSCD.RXCUI,
-          'RELA': 'constitutes',
-          "SAB": "RXNORM"
-        }
-      });
-      let scdcRel;
-      let originalSCDC;
-      if (scdcRelData.data.length > 0) {
-        scdcRel = scdcRelData.data[0];
-        let scdcConsoData = await consoService.find({
-          query: {
-            'RXCUI': scdcRel.RXCUI2,
-            'SAB': "RXNORM",
-            "TTY": "SCDC"
-          }
-        });
-        if (scdcConsoData.data.length > 0) {
-          originalSCDC = scdcConsoData.data[0];
-        }
-      }
+    let SCDCrecords = [];
+    let RELArecords = [];
 
+    const conditions = ['constitutes', 'dose_form_of'];
 
+    let scdcRel;
+    let originalSCDC;
 
-      // creates SCDC object
-      newSCDC = Object.assign({}, originalSCD);
+    // creates SCDC object
+    newSCDC = Object.assign({});
+    console.log(data)
+    for (const ingredient of data.ingredients) {
       newSCDC.STR = ingredient.ingName;
       ingredient.strengths.forEach((strength, i) => {
-
         if (i === 0) {
           newSCDC.STR = newSCDC.STR + ' ' + strength.numStrength + ' ' + strength.strengthUnit;
           newSCDC.numerator_unit = strength.strengthUnit;
@@ -92,39 +48,218 @@ class Service {
           newSCDC.denominator_value = parseInt(strength.numStrength);
         }
       });
-      newSCDC._id = mongoose.Types.ObjectId();
 
+      newSCDC._id = mongoose.Types.ObjectId();
       newSCDC.TTY = 'SCDC';
-      newSCDC.RXCUI = originalSCDC.RXCUI; //this.getRxCUI().toString();
+      newSCDC.RXCUI = ingredient.code; //originalSCDC.RXCUI; //this.getRxCUI().toString();
       newSCDC.SCUI = newSCDC.RXCUI;
       newSCDC.CODE = newSCDC.RXCUI;
-      if (data.pinName == undefined) {
-        newSCDC.SAB = newSCDC.SAB + ' NG';
+      newSCDC.SAB = 'RXNORM NG';
+      console.log(newSCDC);
+      //  const createdSCDC = await consoService.create(newSCDC);
+      // SCDCrecords.push(createdSCDC);
+
+    }
+
+    // creates SCD object
+    newSCD = Object.assign({});
+    newSCD._id = mongoose.Types.ObjectId();
+    SCDCrecords.forEach((scdc, i) => {
+      if (i === 0) {
+        newSCD.STR = scdc.STR;
+      } else {
+        newSCD.STR = newSCD.STR + ' / ' + scdc.STR;
+      }
+    });
+    newSCD.STR = params.query.nameLabel;
+    newSCD.STR = newSCD.STR; // + ' ' + data.ingredients.doseForm.name;
+    newSCD.TTY = 'SCD';
+    // newSCD.RXCUI = originalSCD.RXCUI;
+    newSCD.SCUI = newSCD.RXCUI;
+    newSCD.CODE = newSCD.RXCUI;
+    newSCD.SAB = 'RXNORM NG';
+    // const createdSCD = await consoService.create(newSCD);
+
+    console.log(newSCD);
+
+    // create rela for dose_of
+    // let newRELA;
+    // let createdRela;
+    // for (const rel of scdcRelData.data.filter((rela) => rela.RELA === 'dose_form_of')) {
+    //   const doseForme = await consoService.get(data.ingredients.doseForm.id);
+    //   newRELA = Object.assign({}, rel);
+    //   newRELA._id = mongoose.Types.ObjectId();
+    //   newRELA.RXCUI1 = newSCD.RXCUI;
+    //   newRELA.RXCUI2 = doseForme.RXCUI;
+    //   newRELA.SAB = 'RXNORM NG';
+
+    //   createdRela = await relService.create(newRELA);
+    //   RELArecords.push(createdRela);
+    // }
+
+    // // create rela for constittutes
+    // for (const rel of scdcRelData.data.filter((rela) => rela.RELA === 'constitutes')) {
+    //   for (const scdc of SCDCrecords) {
+    //     let newRELA;
+    //     newRELA = Object.assign({}, rel);
+    //     newRELA._id = mongoose.Types.ObjectId();
+    //     newRELA.RXCUI1 = newSCD.RXCUI;
+    //     newRELA.RXCUI2 = scdc.RXCUI;
+    //     newRELA.SAB = 'RXNORM NG';
+
+    //     let createdRela = await relService.create(newRELA);
+    //     RELArecords.push(createdRela);
+    //   }
+
+    // }
+
+    return {
+      SCDCrecords,
+      createdSCD,
+      RELArecords
+    };
+  }
+
+  async update(id, data, params) {
+    const consoService = this.app.service('rxnconso');
+    const relService = this.app.service('rxnrel');
+
+
+    let newSCD;
+    let newSCDC;
+    let SCDCrecords = [];
+    let RELArecords = [];
+
+    const conditions = ['constitutes', 'dose_form_of'];
+    let originalSCD = await consoService.get(id);
+    const scdcRelData = await relService.find({
+      query: {
+        RXCUI1: originalSCD.RXCUI,
+        RELA: {
+          $in: conditions
+        },
+        SAB: 'RXNORM'
+      }
+    });
+
+    let scdcRel;
+    let originalSCDC;
+    if (scdcRelData.data.length > 0) {
+      for (const rel of scdcRelData.data.filter((rel) => rel.RELA === 'constitutes')) {
+        scdcRel = rel;
+        let scdcConsoData = await consoService.find({
+          query: {
+            RXCUI: scdcRel.RXCUI2,
+            SAB: 'RXNORM',
+            TTY: 'SCDC'
+          }
+        });
+        if (scdcConsoData.data.length > 0) {
+          originalSCDC = scdcConsoData.data[0];
+        }
+
+        // creates SCDC object
+        newSCDC = Object.assign({}, originalSCD);
+        for (const ingredient of data.ingredients.ingredients) {
+          if (ingredient.code === originalSCDC.CODE) {
+            newSCDC.STR = ingredient.ingName;
+            ingredient.strengths.forEach((strength, i) => {
+              if (i === 0) {
+                newSCDC.STR = newSCDC.STR + ' ' + strength.numStrength + ' ' + strength.strengthUnit;
+                newSCDC.numerator_unit = strength.strengthUnit;
+                newSCDC.numerator_value = parseInt(strength.numStrength);
+              } else if (i === 1) {
+                newSCDC.STR = newSCDC.STR + '/';
+                newSCDC.STR = newSCDC.STR + '' + strength.numStrength + ' ' + strength.strengthUnit;
+                newSCDC.denominator_unit = strength.strengthUnit;
+                newSCDC.denominator_value = parseInt(strength.numStrength);
+              }
+            });
+          } else {
+            newSCDC.STR = ingredient.ingName;
+            ingredient.strengths.forEach((strength, i) => {
+              if (i === 0) {
+                newSCDC.STR = newSCDC.STR + ' ' + strength.numStrength + ' ' + strength.strengthUnit;
+                newSCDC.numerator_unit = strength.strengthUnit;
+                newSCDC.numerator_value = parseInt(strength.numStrength);
+              } else if (i === 1) {
+                newSCDC.STR = newSCDC.STR + '/';
+                newSCDC.STR = newSCDC.STR + '' + strength.numStrength + ' ' + strength.strengthUnit;
+                newSCDC.denominator_unit = strength.strengthUnit;
+                newSCDC.denominator_value = parseInt(strength.numStrength);
+              }
+            });
+          }
+
+          newSCDC._id = mongoose.Types.ObjectId();
+          newSCDC.TTY = 'SCDC';
+          newSCDC.RXCUI = ingredient.code; //originalSCDC.RXCUI; //this.getRxCUI().toString();
+          newSCDC.SCUI = newSCDC.RXCUI;
+          newSCDC.CODE = newSCDC.RXCUI;
+          newSCDC.SAB = 'RXNORM NG';
+          const createdSCDC = await consoService.create(newSCDC);
+          SCDCrecords.push(createdSCDC);
+
+        }
+
+
+      }
+    }
+
+    // creates SCD object
+    newSCD = Object.assign({}, originalSCD);
+    newSCD._id = mongoose.Types.ObjectId();
+    SCDCrecords.forEach((scdc, i) => {
+      if (i === 0) {
+        newSCD.STR = scdc.STR;
+      } else {
+        newSCD.STR = newSCD.STR + ' / ' + scdc.STR;
+      }
+    });
+    newSCD.STR = params.query.nameLabel;
+    newSCD.STR = newSCD.STR; // + ' ' + data.ingredients.doseForm.name;
+    newSCD.TTY = 'SCD';
+    newSCD.RXCUI = originalSCD.RXCUI;
+    newSCD.SCUI = newSCD.RXCUI;
+    newSCD.CODE = newSCD.RXCUI;
+    newSCD.SAB = 'RXNORM NG';
+    const createdSCD = await consoService.create(newSCD);
+
+    // create rela for dose_of
+    let newRELA;
+    let createdRela;
+    for (const rel of scdcRelData.data.filter((rela) => rela.RELA === 'dose_form_of')) {
+      const doseForme = await consoService.get(data.ingredients.doseForm.id);
+      newRELA = Object.assign({}, rel);
+      newRELA._id = mongoose.Types.ObjectId();
+      newRELA.RXCUI1 = newSCD.RXCUI;
+      newRELA.RXCUI2 = doseForme.RXCUI;
+      newRELA.SAB = 'RXNORM NG';
+
+      createdRela = await relService.create(newRELA);
+      RELArecords.push(createdRela);
+    }
+
+    // create rela for constittutes
+    for (const rel of scdcRelData.data.filter((rela) => rela.RELA === 'constitutes')) {
+      for (const scdc of SCDCrecords) {
+        let newRELA;
+        newRELA = Object.assign({}, rel);
+        newRELA._id = mongoose.Types.ObjectId();
+        newRELA.RXCUI1 = newSCD.RXCUI;
+        newRELA.RXCUI2 = scdc.RXCUI;
+        newRELA.SAB = 'RXNORM NG';
+
+        let createdRela = await relService.create(newRELA);
+        RELArecords.push(createdRela);
       }
 
+    }
 
-      // console.log("New SCDC: ", newSCDC);
-      // await consoService.create(newSCDC);
-
-      // creates SCD object
-      newSCD = Object.assign({}, newSCDC);
-      newSCD._id = mongoose.Types.ObjectId();
-      newSCD.STR = newSCD.STR + ' ' + data.ingredients.doseForm.name;
-      newSCD.TTY = 'SCD';
-      newSCD.RXCUI = originalSCD.RXCUI;
-      newSCD.SCUI = newSCD.RXCUI;
-      newSCD.CODE = newSCD.RXCUI;
-      // console.log("New SCD: ", newSCD);
-      // await consoService.create(newSCD);
-
-      // create rela for constitute
-
-
-
-    });
     return {
-      newSCDC,
-      newSCD
+      SCDCrecords,
+      createdSCD,
+      RELArecords
     };
   }
   getRxCUI() {

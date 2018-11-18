@@ -8,27 +8,51 @@ class Service {
   async find(params) {
     const consoService = this.app.service('rxnconso');
     const conditions = ['RXNORM', 'RXNORM NG'];
-    let brands = await consoService.find({
-      query: {
-        'TTY': 'SCD',
-        SAB: {
-          $in: conditions
-        },
-        STR: {
-          '$regex': params.query.search,
-          '$options': 'i'
-        },
-        $limit: (params.query.$limit) ? params.query.$limit : 10
-      }
-    });
-    const sub = brands.data.map(this.reFactorPrescriptionData);
-    return jsend.success(sub);
+    if (params.query.search_ingredient) {
+      let brands = await consoService.find({
+        query: {
+          'TTY': 'IN',
+          SAB: {
+            $in: conditions
+          },
+          STR: {
+            '$regex': params.query.search,
+            '$options': 'i'
+          },
+          $limit: (params.query.$limit) ? params.query.$limit : 10
+        }
+      });
+      const sub = brands.data.map(this.reFactorPrescriptionData);
+      return jsend.success(sub);
+    } else {
+      let brands = await consoService.find({
+        query: {
+          'TTY': 'SCD',
+          SAB: {
+            $in: conditions
+          },
+          STR: {
+            '$regex': params.query.search,
+            '$options': 'i'
+          },
+          $limit: (params.query.$limit) ? params.query.$limit : 10
+        }
+      });
+      const sub = brands.data.map(this.reFactorPrescriptionData);
+      return jsend.success(sub);
+    }
+
   }
 
   async get(id, params) {
     const relService = this.app.service('rxnrel');
     const consoService = this.app.service('rxnconso');
-    const conditions = ['RXNORM', 'RXNORM NG'];
+    let emptyConditions = [];
+    if (params.query.sab !== undefined) {
+      emptyConditions.push(params.query.sab);
+    }
+
+    const conditions = params.query.sab === undefined ? ['RXNORM NG'] : emptyConditions;
 
     let awaitSelectedConsoService;
     if (params.query.id !== undefined) {
@@ -87,7 +111,6 @@ class Service {
             },
           }
         });
-
         let awaitedDoseFormList = await consoService.find({
           query: {
             RXCUI: {
@@ -95,11 +118,10 @@ class Service {
             },
             $limit: false,
             SAB: {
-              $in: conditions
+              $in: ['RXNORM']
             },
           }
         });
-
         const sub = awaitedConstituentList.data.map(this.reFactorPrescriptionData);
         const sub2 = awaitedDoseFormList.data.map(this.reFactorPrescriptionData);
 
@@ -150,7 +172,8 @@ class Service {
     return {
       id: data._id,
       name: data.STR,
-      code: data.RXCUI
+      code: data.RXCUI,
+      sab: data.SAB
     };
   }
 
