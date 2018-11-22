@@ -169,12 +169,35 @@ class Service {
   }
 
   reFactorPrescriptionData(data) {
-    return {
-      id: data._id,
-      name: data.STR,
-      code: data.RXCUI,
-      sab: data.SAB
-    };
+    if (data.numerator_unit === undefined || data.numerator_unit === null) {
+      return {
+        id: data._id,
+        name: data.STR,
+        code: data.RXCUI,
+        sab: data.SAB
+      };
+    } else if (data.numerator_unit !== undefined && data.denominator_unit !== undefined) {
+      return {
+        id: data._id,
+        name: data.STR,
+        code: data.RXCUI,
+        sab: data.SAB,
+        numerator_unit: data.numerator_unit,
+        numerator_value: data.numerator_value,
+        denominator_unit: data.denominator_unit,
+        denominator_value: data.denominator_value
+      };
+    } else if (data.numerator_unit !== undefined) {
+      return {
+        id: data._id,
+        name: data.STR,
+        code: data.RXCUI,
+        sab: data.SAB,
+        numerator_unit: data.numerator_unit,
+        numerator_value: data.numerator_value
+      };
+
+    }
   }
 
   create(data, params) {
