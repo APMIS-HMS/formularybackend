@@ -33,6 +33,8 @@ const strengthUnits = require('./strength-units/strength-units.service.js');
 
 const createScd = require('./create-scd/create-scd.service.js');
 
+const productList = require('./product-list/product-list.service.js');
+
 module.exports = function (app) {
   app.configure(products);
   app.configure(productTypes);
@@ -53,4 +55,5 @@ module.exports = function (app) {
   app.configure(doseForms);
   app.configure(strengthUnits);
   app.configure(createScd);
+  app.configure(productList);
 };
