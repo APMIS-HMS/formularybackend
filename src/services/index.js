@@ -25,20 +25,35 @@ const frequencies = require('./frequencies/frequencies.service.js');
 
 const roles = require('./roles/roles.service.js');
 
-module.exports = function(app) {
-    app.configure(products);
-    app.configure(productTypes);
-    app.configure(searchBrands);
-    app.configure(users);
-    app.configure(rxnconso);
-    app.configure(prescriptions);
-    app.configure(rxnrel);
-    app.configure(searchIngredients);
-    app.configure(searchProducts);
-    app.configure(createBrandedProducts);
-    app.configure(rxcuiIds);
-    app.configure(manufacturers);
-    app.configure(productImgs);
-    app.configure(frequencies);
-    app.configure(roles);
+const createProduct = require('./create-product/create-product.service.js');
+
+const doseForms = require('./dose-forms/dose-forms.service.js');
+
+const strengthUnits = require('./strength-units/strength-units.service.js');
+
+const createScd = require('./create-scd/create-scd.service.js');
+
+const productList = require('./product-list/product-list.service.js');
+
+module.exports = function (app) {
+  app.configure(products);
+  app.configure(productTypes);
+  app.configure(searchBrands);
+  app.configure(users);
+  app.configure(rxnconso);
+  app.configure(prescriptions);
+  app.configure(rxnrel);
+  app.configure(searchIngredients);
+  app.configure(searchProducts);
+  app.configure(createBrandedProducts);
+  app.configure(rxcuiIds);
+  app.configure(manufacturers);
+  app.configure(productImgs);
+  app.configure(frequencies);
+  app.configure(roles);
+  app.configure(createProduct);
+  app.configure(doseForms);
+  app.configure(strengthUnits);
+  app.configure(createScd);
+  app.configure(productList);
 };
