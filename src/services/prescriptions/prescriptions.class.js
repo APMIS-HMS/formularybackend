@@ -6,19 +6,32 @@ class Service {
   }
   async find(params) {
     if (params.query.search == undefined || params.query.search.length >= 4) {
+      let regexList = [];
+      params.query.search.split(',').forEach((value) => {
+        regexList.push({
+          STR: {
+            $regex: value,
+            $options: 'gmi'
+          }
+        });
+      });
+
       const conditions = ['RXNORM', 'RXNORM NG'];
       const consoService = this.app.service('rxnconso');
+
+      // var regex = [];
+      // for (var i = 0; i < params.query.search.split(',').length; i++) {
+      // 	regex[i] = new RegExp(params.query.search.split(',')[i], 'gmi');
+      // }
+
       const awaitConsoService = await consoService.find({
         query: {
-          STR: {
-            $regex: params.query.search,
-            '$options': 'i'
-          },
+          $and: [...regexList],
           SAB: {
             $in: conditions
           },
-          'TTY': 'SCD',
-          $limit: params.query.$limit ? params.query.$limit : 10,
+          TTY: 'SCD',
+          $limit: params.query.$limit ? params.query.$limit : 20,
           $skip: params.query.$skip ? params.query.$skip : 0
         }
       });
@@ -47,38 +60,37 @@ class Service {
 
     const awaitSelectedConsoService = await consoService.find({
       query: {
-        'RXCUI': id,
+        RXCUI: id,
         SAB: {
           $in: conditions
         },
-        'TTY': 'SCD'
+        TTY: 'SCD'
       }
     });
 
     if (awaitSelectedConsoService.data.length > 0) {
       const awaitDoseForm = await relService.find({
         query: {
-          'RXCUI1': id,
-          'RELA': 'dose_form_of'
+          RXCUI1: id,
+          RELA: 'dose_form_of'
         }
       });
       if (awaitDoseForm.data.length > 0) {
         const rela = awaitDoseForm.data[0];
         const relaCUI = rela.RXCUI2;
 
-
         const awaitConsoService = await consoService.find({
           query: {
-            'RXCUI': relaCUI,
+            RXCUI: relaCUI,
             SAB: {
               $in: conditions
-            },
+            }
           }
         });
         const sub = awaitConsoService.data.map(this.reFactorPrescriptionData);
         const main = awaitSelectedConsoService.data.map(this.reFactorPrescriptionData);
         awaitSelectedConsoService.data = main;
-        awaitSelectedConsoService.data.forEach(main => {
+        awaitSelectedConsoService.data.forEach((main) => {
           main.dose_form = sub;
         });
         return jsend.success(awaitSelectedConsoService);
@@ -92,9 +104,6 @@ class Service {
         validation: ['supplied code does not exist on APMIS FORMULARY']
       });
     }
-
-
-
   }
   reFactorPrescriptionWithDoseFormData(conso) {
     let main = {
@@ -107,7 +116,7 @@ class Service {
   }
   create(data, params) {
     if (Array.isArray(data)) {
-      return Promise.all(data.map(current => this.create(current)));
+      return Promise.all(data.map((current) => this.create(current)));
     }
 
     return Promise.resolve(data);
@@ -130,7 +139,6 @@ class Service {
   setup(app) {
     this.app = app;
   }
-
 }
 
 module.exports = function (options) {

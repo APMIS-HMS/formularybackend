@@ -35,6 +35,8 @@ const createScd = require('./create-scd/create-scd.service.js');
 
 const productList = require('./product-list/product-list.service.js');
 
+const getScdcBySbdCode = require('./get-scdc-by-sbd-code/get-scdc-by-sbd-code.service.js');
+
 module.exports = function (app) {
   app.configure(products);
   app.configure(productTypes);
@@ -56,4 +58,5 @@ module.exports = function (app) {
   app.configure(strengthUnits);
   app.configure(createScd);
   app.configure(productList);
+  app.configure(getScdcBySbdCode);
 };
